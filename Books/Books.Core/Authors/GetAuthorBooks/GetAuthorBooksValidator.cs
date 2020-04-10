@@ -1,7 +1,6 @@
-﻿using Books.Core.Books.GetBooksByAuthor;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Books.Core.Books.GetBooks
+namespace Books.Core.Authors
 {
 	public class GetAuthorBooksValidator : AbstractValidator<GetAuthorBooksQuery>
 	{

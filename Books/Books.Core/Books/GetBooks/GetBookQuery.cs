@@ -1,30 +1,33 @@
-﻿using Books.Common.Models;
+﻿using Books.Common.Events;
+using Books.Common.Models;
+using Books.Core.Events;
 using Books.Core.Models;
 using Books.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Books.Core.Books.GetBooks
+namespace Books.Core.Books
 {
-	public class GetBookQuery: IRequest<SetResult<BookDto>>
+	public class GetBookQuery : IRequest<SetResult<BookDto>>
 	{
 		public class Handler : IRequestHandler<GetBookQuery, SetResult<BookDto>>
 		{
 			private readonly IBooksRepository _booksRepository;
+			private readonly IEventBus _eventBus;
 
-			public Handler(IBooksRepository booksRepository)
+			public Handler(IBooksRepository booksRepository, IEventBus eventBus)
 			{
 				_booksRepository = booksRepository;
+				_eventBus = eventBus;
 			}
 
 			public async Task<SetResult<BookDto>> Handle(GetBookQuery request, CancellationToken cancellationToken)
 			{
 				var b = await _dbGetBooks();
+				_eventBus.Publish(new GetBooksEvent());
+
 				return new SetResult<BookDto>(_transformToDto(b));
 			}
 

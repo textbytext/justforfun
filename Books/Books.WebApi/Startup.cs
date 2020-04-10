@@ -1,24 +1,22 @@
 using AutoMapper;
-using Books.Common.Models;
+using Books.Common.Events;
 using Books.Core;
-using Books.Core.Books.GetBooks;
+using Books.Core.Books;
 using Books.Domain;
+using Books.Infrastructure.Events;
 using Books.Infrastructure.SQLite;
+using Books.WebApi.Middlewares;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 
 namespace Books.WebApi
 {
@@ -30,6 +28,8 @@ namespace Books.WebApi
 
 		public Startup(IConfiguration configuration, IWebHostEnvironment env)
 		{
+			Console.WriteLine($"EnvironmentName: {env.EnvironmentName}");
+
 			_isDevelopment = env.IsDevelopment();
 
 			Configuration = new ConfigurationBuilder()
@@ -64,58 +64,22 @@ namespace Books.WebApi
 				s.SwaggerDoc("v1", new OpenApiInfo { Title = ProjectName, Version = "v1" });
 			});
 
-
 			services.AddScoped<Core.IMediator, Core.Mediator>();
+			services.AddSingleton<IEventBus, EventBus>();
+			EventsRegistrator.ConfigureServices(services, typeof(GetBookQuery).Assembly);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			//EventsRegistrator.Configure(app.ApplicationServices, typeof(GetBookQuery).Assembly);
+
 			if (env.IsDevelopment())
 			{
 				//app.UseDeveloperExceptionPage();
 			}
 
-			app.UseExceptionHandler(errorApp =>
-			{
-				errorApp.Run(async context =>
-				{
-					context.Response.StatusCode = context.Response.StatusCode;
-					context.Response.ContentType = "application/json";
-
-					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-					var ex = exceptionHandlerPathFeature?.Error;
-					var result = new ErrorResult();
-					if (null != ex)
-					{
-						if (ex is AggregateException)
-						{
-							var exceptions = ex as AggregateException;
-							exceptions
-								.InnerExceptions
-								.ToList()
-								.ForEach(e => 
-								{
-									result.SetError("error", e.Message);
-								});
-						}
-						else if (ex is FluentValidation.ValidationException)
-						{
-							var exceptions = ex as FluentValidation.ValidationException;
-							exceptions
-								.Errors
-								.ToList()
-								.ForEach(e =>
-								{
-									result.SetError(e.PropertyName, e.ErrorMessage);
-								});
-						}
-					}
-					var json = JsonSerializer.Serialize(result);
-					await context.Response.WriteAsync(json);
-					//await context.Response.WriteAsync(new string(' ', 512)); // IE padding
-				});
-			});
+			app.UseExceptionHandler(errorApp => errorApp.Run(ExceptionHandler.Handle));
 
 			app.UseHttpsRedirection();
 

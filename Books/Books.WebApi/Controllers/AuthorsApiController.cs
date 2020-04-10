@@ -1,7 +1,6 @@
 ﻿using Books.Common.Models;
 using Books.Core;
-using Books.Core.Books.GetBooks;
-using Books.Core.Books.GetBooksByAuthor;
+using Books.Core.Authors;
 using Books.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

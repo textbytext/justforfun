@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Books.Common.Models;
+﻿using Books.Common.Models;
 using Books.Core;
-using Books.Core.Books.GetBooks;
+using Books.Core.Books;
 using Books.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Books.WebApi.Controllers
 {

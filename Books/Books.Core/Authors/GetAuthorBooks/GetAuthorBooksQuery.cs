@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Books.Core.Books.GetBooksByAuthor
+namespace Books.Core.Authors
 {
 	public class GetAuthorBooksQuery : IRequest<SetResult<BookDto>>
 	{
