@@ -2,6 +2,7 @@
 using Books.Core;
 using Books.Core.Authors;
 using Books.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ using System.Threading.Tasks;
 namespace Books.WebApi.Controllers
 {
 	[ApiController]
-	[Route("api/author")]
+	[Route("api/authors")]
+	[Authorize]
 	public class AuthorsApiController : ControllerBase
 	{
 		private readonly ILogger<AuthorsApiController> _logger;
@@ -21,7 +23,7 @@ namespace Books.WebApi.Controllers
 			_mediator = mediator;
 		}
 
-		[HttpGet("all")]
+		[HttpGet]
 		public async Task<SetResult<AuthorDto>> GetAuthors()
 		{
 			var cmd = new GetAuthorsQuery();

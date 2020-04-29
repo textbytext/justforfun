@@ -5,8 +5,10 @@ using Books.Core.Books;
 using Books.Domain;
 using Books.Infrastructure.Events;
 using Books.Infrastructure.SQLite;
+using Books.WebApi.GraphQL;
 using Books.WebApi.Middlewares;
 using FluentValidation.AspNetCore;
+using GraphQL.Server;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,7 +49,12 @@ namespace Books.WebApi
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
 			services.AddControllers()
-				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetBookQuery>());
+				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetBookQuery>())
+				.AddJsonOptions(option =>
+				{
+					option.JsonSerializerOptions.PropertyNamingPolicy = null;
+					option.JsonSerializerOptions.MaxDepth = 256;
+				}); ;
 
 			var connectionString = Configuration.GetConnectionString("SQLiteBooks");
 			services
@@ -67,21 +74,40 @@ namespace Books.WebApi
 			services.AddScoped<Core.IMediator, Core.Mediator>();
 			services.AddSingleton<IEventBus, EventBus>();
 			EventsRegistrator.ConfigureServices(services, typeof(GetBookQuery).Assembly);
+
+			//services.AddScoped<BookQuery>();
+			//services.AddScoped<BookMutation>();
+
+			services.AddScoped<BookSchema>();
+
+			services.AddGraphQL(new GraphQLOptions
+				{
+					EnableMetrics = false // hide extensions
+				})
+				.AddGraphTypes(ServiceLifetime.Scoped)
+				.AddSystemTextJson()
+				.AddGraphTypes(typeof(BookSchema));
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			//EventsRegistrator.Configure(app.ApplicationServices, typeof(GetBookQuery).Assembly);
-
 			if (env.IsDevelopment())
 			{
 				//app.UseDeveloperExceptionPage();
 			}
+			app.UseMiddleware<DataBaseSeeder>();
+
+			app.UseGraphQL<BookSchema>("/graphql"); // if not commented then GraphQlController not using
+			
+
+			//app.UseGraphQLPlayground(new GraphQLPlaygroundOptions()); //to explorer API navigate https://*DOMAIN*/ui/playground           //... UseMVC ....
+
 
 			app.UseExceptionHandler(errorApp => errorApp.Run(ExceptionHandler.Handle));
 
-			app.UseHttpsRedirection();
+			//app.UseHttpsRedirection();
 
 			app.UseStaticFiles();
 
@@ -92,7 +118,10 @@ namespace Books.WebApi
 			});
 
 			app.UseRouting();
+
+			app.UseAuthentication();
 			app.UseAuthorization();
+
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Books.WebApi.Controllers
 {
 	[ApiController]
-	[Route("api/book")]
+	[Route("api/books")]
 	public class BooksApiController : ControllerBase
 	{
 		private readonly ILogger<BooksApiController> _logger;
@@ -21,7 +21,7 @@ namespace Books.WebApi.Controllers
 			_mediator = mediator;
 		}
 
-		[HttpGet("all")]
+		[HttpGet]
 		public async Task<SetResult<BookDto>> GetBooks()
 		{
 			var cmd = new GetBookQuery();

@@ -5,3 +5,4 @@ cd .\Books.Infrastructure
 dotnet ef migrations add InitialCreate -s ../Books.WebApi/
 
 dotnet ef database update -s ../Books.WebApi/
+
