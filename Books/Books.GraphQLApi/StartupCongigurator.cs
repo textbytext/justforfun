@@ -1,20 +1,12 @@
 ﻿using Books.GraphQLApi.Models;
-using GraphQL;
 using GraphQL.Server;
-using GraphQL.Server.Transports.AspNetCore;
-using GraphQL.Server.Transports.AspNetCore.Common;
-using GraphQL.SystemTextJson;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Books.GraphQLApi
 {
@@ -38,7 +30,7 @@ namespace Books.GraphQLApi
 				.AddScoped<AddBookRequest>()
 				.AddScoped<BookQuery>()
 				.AddScoped<BookMutation>()*/
-				.AddScoped<BookSchema>()			
+				.AddScoped<BookSchema>()
 				.AddGraphQL(options =>
 				{
 					options.EnableMetrics = env.IsDevelopment();
