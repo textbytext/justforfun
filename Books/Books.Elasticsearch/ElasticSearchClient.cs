@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -22,11 +23,57 @@ namespace Books.Elasticsearch
 		private readonly string _indexUrl;
 		private readonly IElasticsearchBookConfiguration _configuration;
 		private readonly HttpClient _httpClient;
-		public ElasticSearchClient(HttpClient httpClient, IElasticsearchBookConfiguration configuration)
+		private readonly ILogger<ElasticSearchClient> _logger;
+
+		public ElasticSearchClient(HttpClient httpClient, IElasticsearchBookConfiguration configuration, ILogger<ElasticSearchClient> logger)
 		{
 			_configuration = configuration;
-			_indexUrl = $"{_configuration.URL}/{_configuration.IndexNamne}";
+			_indexUrl = $"{_configuration.URL}/{_configuration.IndexName}";
 			_httpClient = httpClient;
+			_logger = logger;
+			_logger.LogDebug($"elastic address: {_indexUrl}");
+
+			/*Task.Run(async () =>
+			{
+				await CreateIndex();
+			});*/
+		}
+
+		private async Task CreateIndex()
+		{
+			var indexSettings = new
+			{
+				settings = new
+				{
+					index = new
+					{
+						number_of_shards = 1,
+						number_of_replicas = 0
+					}					
+				},
+				mappings = new
+				{
+					properties = new
+					{
+						Title = new
+						{
+							type = "text"
+						},
+						Id = new
+						{
+							type = "long"
+						},
+						DatePublish = new
+						{
+							type = "date"
+						}
+					}
+				}
+			};
+
+			var json = JsonSerializer.Serialize(indexSettings);
+			var resp = await _httpClient.PutAsync(_indexUrl, new StringContent(json, Encoding.UTF8, "application/json"));
+			await _processResponse(resp);
 		}
 
 		private string _serialize<T>(T obj)
@@ -34,11 +81,21 @@ namespace Books.Elasticsearch
 			return JsonSerializer.Serialize(obj);
 		}
 
+		private async Task _processResponse(HttpResponseMessage response)
+		{
+			var resp = await response.Content.ReadAsStringAsync();
+			_logger.LogDebug($"Response: {resp}");
+		}
+
 		public async Task Add<T>(T data)
 		{
 			var url = _indexUrl;
 			var json = _serialize(data);
+			_logger.LogDebug($"Add: {json}");
+
 			var resp = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+
+			await _processResponse(resp);
 			if (resp.IsSuccessStatusCode)
 			{ 
 				// ...

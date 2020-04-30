@@ -76,6 +76,7 @@ namespace Books.WebApi
 			services.AddScoped<Core.IMediator, Core.Mediator>();
 			services.AddSingleton<IEventBus, EventBus>();
 			EventsRegistrator.ConfigureServices(services, typeof(GetBookQuery).Assembly);
+			EventsRegistrator.ConfigureServices(services, typeof(BooksElasticsearchService).Assembly);
 
 			//services.AddScoped<BookQuery>();
 			//services.AddScoped<BookMutation>();

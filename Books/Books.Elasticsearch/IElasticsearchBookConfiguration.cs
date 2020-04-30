@@ -7,13 +7,13 @@ namespace Books.Elasticsearch
 	public interface IElasticsearchBookConfiguration
 	{
 		string URL { get; }
-		string IndexNamne { get; }
+		string IndexName { get; }
 	}
 
 	public class ElasticsearchBookConfiguration : IElasticsearchBookConfiguration
 	{
 		public string URL { get; set; }
 
-		public string IndexNamne { get; set; }
+		public string IndexName { get; set; }
 	}
 }
