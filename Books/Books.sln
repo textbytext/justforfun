@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Books.Common", "Books.Commo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Books.Infrastructure", "Books.Infrastructure\Books.Infrastructure.csproj", "{2AEF8D33-DB9C-431D-9ABC-88785D084016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.GraphQLApi", "Books.GraphQLApi\Books.GraphQLApi.csproj", "{EE38933E-DFAC-4233-BA45-6B7E795E5B48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{2AEF8D33-DB9C-431D-9ABC-88785D084016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AEF8D33-DB9C-431D-9ABC-88785D084016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AEF8D33-DB9C-431D-9ABC-88785D084016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE38933E-DFAC-4233-BA45-6B7E795E5B48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE38933E-DFAC-4233-BA45-6B7E795E5B48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE38933E-DFAC-4233-BA45-6B7E795E5B48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE38933E-DFAC-4233-BA45-6B7E795E5B48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

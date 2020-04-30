@@ -10,11 +10,6 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
-    <PackageReference Include="GraphiQL" Version="2.0.0" />
-    <PackageReference Include="GraphQL" Version="3.0.0-preview-1490" />
-    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.5.0-alpha0046" />
-    <PackageReference Include="GraphQL.Server.Transports.AspNetCore.SystemTextJson" Version="3.5.0-alpha0046" />
-    <PackageReference Include="GraphQL.SystemTextJson" Version="3.0.0-preview-1490" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
@@ -32,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Books.Common\Books.Common.csproj" />
     <ProjectReference Include="..\Books.Core\Books.Core.csproj" />
+    <ProjectReference Include="..\Books.GraphQLApi\Books.GraphQLApi.csproj" />
     <ProjectReference Include="..\Books.Infrastructure\Books.Infrastructure.csproj" />
   </ItemGroup>
 

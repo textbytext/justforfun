@@ -3,7 +3,7 @@ using Books.Core.Models;
 using GraphQL;
 using GraphQL.Types;
 
-namespace Books.WebApi.GraphQL
+namespace Books.GraphQLApi.Models
 {
 	public class AddBookRequest : InputObjectGraphType
 	{
