@@ -1,0 +1,33 @@
+﻿@{
+	ViewData["Title"] = "Login";
+
+	var user = this.Context.User;
+	var cookies = this.Context.Request.Cookies
+		.Select(c =>
+		new
+		{
+			c.Key,
+			c.Value
+		});
+}
+
+<h1>Login</h1>
+
+<p>
+	User: @(System.Text.Json.JsonSerializer.Serialize(user))
+</p>
+
+<p>
+	cookies: @(System.Text.Json.JsonSerializer.Serialize(cookies))
+</p>
+
+<p>
+	accessToken: @ViewBag.accessToken
+</p>
+<p>
+	idToken: @ViewBag.idToken
+</p>
+
+<p>
+	identity: @ViewBag.identity
+</p>
