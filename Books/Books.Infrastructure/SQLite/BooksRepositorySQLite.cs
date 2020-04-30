@@ -34,9 +34,12 @@ namespace Books.Infrastructure.SQLite
 			return await query.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<IEnumerable<Author>> GetAuthors()
+		public async Task<IEnumerable<AuthorDto>> GetAuthors()
 		{
-			return await _context.Authors.ToListAsync();
+			return await _context
+				.Authors
+				.Select(_toAuthorDto)
+				.ToListAsync();
 		}
 
 		public async Task<IEnumerable<Book>> GetBooks()
@@ -58,26 +61,48 @@ namespace Books.Infrastructure.SQLite
 				.FirstOrDefault();
 		}
 
-		public async Task<int> AddBooks(IEnumerable<BookDto> books)
+		public async Task<IEnumerable<BookDto>> AddBooks(IEnumerable<BookDto> books)
 		{
 			return await _addBooks(books);
 		}
 
-		private async Task<int> _addBooks(IEnumerable<BookDto> books)
+		private async Task<IEnumerable<BookDto>> _addBooks(IEnumerable<BookDto> books)
 		{
 			var db = books.Select(b => new Book()
 			{
 				Title = b.Title,
-				DatePublish = DateTime.Now
-			});
+				DatePublish = b.DatePublish
+			}).ToList();
 
 			await _context.Books.AddRangeAsync(db);
-			return await _context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
+
+			return db
+				.AsQueryable()
+				.Select(_toBookDto)
+				.ToList();
 		}
 
-		public async Task<int> AddBook(BookDto book)
+		public async Task<BookDto> AddBook(BookDto book)
 		{
-			return await _addBooks(new[] { book });
+			var result = await _addBooks(new[] { book });
+			return result.FirstOrDefault();
+		}
+
+		public async Task<IEnumerable<AuthorDto>> GetAuthors(IEnumerable<long> authors)
+		{
+			if (null == authors || authors.Count() == 0)
+			{
+				return new List<AuthorDto>();
+			}
+
+			var query = from a in _context.Authors
+						where authors.Contains(a.Id)
+						select a;
+
+			return await query
+				.Select(_toAuthorDto)
+				.ToListAsync() ?? new List<AuthorDto>();
 		}
 
 		private Expression<Func<Book, BookDto>> _toBookDto
@@ -87,7 +112,20 @@ namespace Books.Infrastructure.SQLite
 				return x => new BookDto()
 				{
 					Id = x.Id,
-					Title = x.Title
+					Title = x.Title,
+					DatePublish = x.DatePublish
+				};
+			}
+		}
+
+		private Expression<Func<Author, AuthorDto>> _toAuthorDto
+		{
+			get
+			{
+				return x => new AuthorDto()
+				{
+					Id = x.Id,
+					Name = x.Name
 				};
 			}
 		}

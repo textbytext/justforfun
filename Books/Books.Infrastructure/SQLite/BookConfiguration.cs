@@ -15,7 +15,8 @@ namespace Books.Infrastructure.SQLite
 
 			builder.HasKey(b => b.Id);
 
-			builder.Property(b => b.Id)				
+			builder.Property(b => b.Id)		
+				.IsRequired()
 				.ValueGeneratedOnAdd();
 
 			builder.HasMany(b => b.AuthorBooks)

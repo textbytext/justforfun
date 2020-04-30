@@ -2,9 +2,6 @@
 using Books.Common.Models;
 using Books.Core.Events;
 using Books.Core.Models;
-using Books.Domain.Entities;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,23 +22,11 @@ namespace Books.Core.Authors
 
 			public async Task<SetResult<AuthorDto>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
 			{
-				var b = await _dbGetAuthors();
+				var authors = await _booksRepository.GetAuthors();
+
 				_eventBus.Publish(new GetAuthorsEvent());
-				return new SetResult<AuthorDto>(_transformToDto(b));
-			}
 
-			private async Task<IEnumerable<Author>> _dbGetAuthors()
-			{
-				return await _booksRepository.GetAuthors();
-			}
-
-			private IEnumerable<AuthorDto> _transformToDto(IEnumerable<Author> result)
-			{
-				return result.Select(b => new AuthorDto()
-				{
-					Id = b.Id,
-					Name = b.Name
-				});
+				return new SetResult<AuthorDto>(authors);
 			}
 		}
 	}

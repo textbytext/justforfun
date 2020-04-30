@@ -1,7 +1,9 @@
 ﻿using Books.Core;
+using Books.Core.Books;
 using Books.Core.Models;
 using GraphQL;
 using GraphQL.Types;
+using System;
 
 namespace Books.GraphQLApi.Models
 {
@@ -9,14 +11,19 @@ namespace Books.GraphQLApi.Models
 	{
 		public class Book
 		{
-			public int? Id { get; set; }
+			public long Id { get; set; }
 			public string Title { get; set; }
+			public DateTime DatePublish { get; set; }
+			public long[] Authors { get; set; }
 		}
 
 		public AddBookRequest()
 		{
 			Name = "addBook";
+			Field<LongGraphType>("id");
 			Field<NonNullGraphType<StringGraphType>>("title");
+			Field<NonNullGraphType<DateTimeGraphType>>("datePublish");
+			Field<ListGraphType<LongGraphType>>("authors");
 		}
 	}
 
@@ -24,13 +31,31 @@ namespace Books.GraphQLApi.Models
 	{
 		public AddBookType()
 		{
-			Field(x => x.Title).Description("Title of an book");
+			Field(x => x.Id).Description("Id of a book");
+			Field(x => x.Title).Description("Title of a book");
+			Field(x => x.DatePublish).Description("DatePublish of a book");
+			Field(x => x.Authors).Description("Author ids of a book");
+
+			IsTypeOf = obj =>
+			{
+				var type = obj.GetType();
+				if (type == typeof(BookDto))
+				{
+					return true;
+				}
+
+				if (type == typeof(AddBookRequest.Book))
+				{
+					return true;
+				}
+				return false;
+			};
 		}
 	}
 
 	public class BookMutation : ObjectGraphType<AddBookRequest>
 	{
-		public BookMutation(IBooksRepository repo)
+		public BookMutation(IMediator mediator)
 		{
 			Name = "Mutation";
 
@@ -46,12 +71,15 @@ namespace Books.GraphQLApi.Models
 					// Get Argument 
 					var req = context.GetArgument<AddBookRequest.Book>("book");
 
-					var book = new BookDto()
+					var cmd = new AddBookCommand()
 					{
-						Title = req.Title
+						Title = req.Title,
+						DatePublish = req.DatePublish
 					};
 
-					req.Id = repo.AddBook(book).Result;
+					var book = mediator.Send(cmd).Result.Result;
+
+					req.Id = book.Id;
 					return req;
 				}
 			);

@@ -3,6 +3,7 @@ using Books.Common.Events;
 using Books.Core;
 using Books.Core.Books;
 using Books.Domain;
+using Books.Elasticsearch;
 using Books.GraphQLApi;
 using Books.Infrastructure.Events;
 using Books.Infrastructure.SQLite;
@@ -79,7 +80,9 @@ namespace Books.WebApi
 			//services.AddScoped<BookQuery>();
 			//services.AddScoped<BookMutation>();
 
-			StartupCongigurator.ConfigureServices(services, _env);
+			StartupConfigurator.ConfigureServices(services, _env);
+
+			ElasticsearchStartupConfigurator.ConfigureServices(services, Configuration);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +94,7 @@ namespace Books.WebApi
 			}
 			app.UseMiddleware<DataBaseSeeder>();
 
-			StartupCongigurator.Configure(app);
+			StartupConfigurator.Configure(app);
 
 			app.UseExceptionHandler(errorApp => errorApp.Run(ExceptionHandler.Handle));
 

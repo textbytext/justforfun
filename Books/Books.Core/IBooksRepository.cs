@@ -9,12 +9,13 @@ namespace Books.Core
 	{
 		Task<IEnumerable<Book>> GetBooks();
 
-		Task<IEnumerable<Author>> GetAuthors();
+		Task<IEnumerable<AuthorDto>> GetAuthors();
+		Task<IEnumerable<AuthorDto>> GetAuthors(IEnumerable<long> authors);
 
 		Task<IEnumerable<Book>> GetAuthorBooks(long authorId);
 		BookDto GetBookById(int id);
 		Task<int> GetBooksCount();
-		Task<int> AddBooks(IEnumerable<BookDto> book);
-		Task<int> AddBook(BookDto book);
+		Task<IEnumerable<BookDto>> AddBooks(IEnumerable<BookDto> book);
+		Task<BookDto> AddBook(BookDto book);
 	}
 }

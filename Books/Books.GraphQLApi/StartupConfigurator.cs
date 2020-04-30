@@ -15,7 +15,7 @@ namespace Books.GraphQLApi
 		public ClaimsPrincipal User { get; set; }
 	}
 
-	public static class StartupCongigurator
+	public static class StartupConfigurator
 	{
 		public static IServiceCollection ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
 		{

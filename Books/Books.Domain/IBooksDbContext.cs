@@ -15,5 +15,6 @@ namespace Books.Domain
 		public DbSet<AuthorBook> BookAuthors { get; set; }
 
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+		int SaveChanges();
 	}
 }

@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Books.Common\Books.Common.csproj" />
     <ProjectReference Include="..\Books.Core\Books.Core.csproj" />
+    <ProjectReference Include="..\Books.Elasticsearch\Books.Elasticsearch.csproj" />
     <ProjectReference Include="..\Books.GraphQLApi\Books.GraphQLApi.csproj" />
     <ProjectReference Include="..\Books.Infrastructure\Books.Infrastructure.csproj" />
   </ItemGroup>
