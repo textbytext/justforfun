@@ -13,7 +13,7 @@ namespace Books.Elasticsearch
 			services.AddSingleton<IElasticsearchBookConfiguration>(ecfg.Get<ElasticsearchBookConfiguration>());
 
 			services.AddTransient<IBooksSearchService, BooksElasticsearchService>();
-			services.AddHttpClient<IElasticSearchClient, ElasticSearchClient>();
+			services.AddHttpClient<IElasticSearchClient, ElasticSearchBookClient>();
 			return services;
 		}
 	}

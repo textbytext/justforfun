@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Books.Infrastructure", "Boo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Books.GraphQLApi", "Books.GraphQLApi\Books.GraphQLApi.csproj", "{EE38933E-DFAC-4233-BA45-6B7E795E5B48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.Elasticsearch", "Books.Elasticsearch\Books.Elasticsearch.csproj", "{06AB3E33-E88E-40B4-97B6-9A6B12E5568A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Books.Elasticsearch", "Books.Elasticsearch\Books.Elasticsearch.csproj", "{06AB3E33-E88E-40B4-97B6-9A6B12E5568A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

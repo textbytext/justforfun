@@ -6,6 +6,6 @@ namespace Books.Common.Events
 
 	public interface IEventBus
 	{
-		void Publish<T>(in T evnt) where T : BaseEvent;
+		void Publish<T>(T evnt) where T : BaseEvent;
 	}
 }

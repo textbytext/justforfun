@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace Books.Infrastructure.Events
 			_logger = logger;
 		}
 
-		public void Publish<T>(in T evnt) where T : BaseEvent
+		public void Publish<T>(T evnt) where T : BaseEvent
 		{
 			_logger.LogDebug($"Send. T: {typeof(T).FullName}, evnt: {JsonSerializer.Serialize(evnt)}");
 
@@ -28,18 +27,24 @@ namespace Books.Infrastructure.Events
 				.GetServices<GenericEventSubscriber<T>>()
 				.ToList();
 
-			if (null != handlers && handlers.Count() > 0)
+			var logger = _logger;
+			if (handlers?.Count() > 0)
 			{
-				foreach (var handler in handlers)
+				Task.Run(() =>
 				{
-					try
+					foreach (var handler in handlers)
 					{
-						handler.Handle(evnt);	
+						try
+						{
+							handler.Handle(evnt);
+						}
+						catch (Exception e)
+						{
+							var mesage = $"EventBus error. evnt={evnt.GetType().FullName}, handler={handler.GetType().FullName}";
+							logger.LogError(mesage, evnt);
+						}
 					}
-					catch (Exception e)
-					{
-					}
-				}
+				});
 			}
 		}
 	}

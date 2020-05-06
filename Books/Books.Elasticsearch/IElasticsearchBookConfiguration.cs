@@ -8,6 +8,7 @@ namespace Books.Elasticsearch
 	{
 		string URL { get; }
 		string IndexName { get; }
+		string BookType { get; }
 	}
 
 	public class ElasticsearchBookConfiguration : IElasticsearchBookConfiguration
@@ -15,5 +16,6 @@ namespace Books.Elasticsearch
 		public string URL { get; set; }
 
 		public string IndexName { get; set; }
+		public string BookType { get; set; }		
 	}
 }
