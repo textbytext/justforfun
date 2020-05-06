@@ -10,5 +10,6 @@ namespace Books.Core
 	{
 		Task<IEnumerable<long>> FindBookIdsByTitle(string title);
 		Task AddBook(BookDto book);
+		Task UpdateBook(BookDto book);
 	}
 }

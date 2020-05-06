@@ -13,9 +13,10 @@ namespace Books.Core
 		Task<IEnumerable<AuthorDto>> GetAuthors(IEnumerable<long> authors);
 
 		Task<IEnumerable<Book>> GetAuthorBooks(long authorId);
-		BookDto GetBookById(int id);
+		BookDto GetBookById(long id);
 		Task<int> GetBooksCount();
 		Task<IEnumerable<BookDto>> AddBooks(IEnumerable<BookDto> book);
 		Task<BookDto> AddBook(BookDto book);
+		Task<BookDto> UpdateBook(BookDto book);
 	}
 }

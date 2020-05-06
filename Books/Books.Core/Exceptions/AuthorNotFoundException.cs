@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Books.Core.Exceptions
 {
-	public class AuthorNotFoundException: Exception
+	public class AuthorNotFoundException: BookBaseException
 	{
 		public readonly IEnumerable<long> Authors;
 		public AuthorNotFoundException(IEnumerable<long> ids)

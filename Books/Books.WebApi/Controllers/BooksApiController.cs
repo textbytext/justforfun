@@ -41,5 +41,19 @@ namespace Books.WebApi.Controllers
 
 			return await _mediator.Send(cmd);
 		}
+
+		[HttpPut]
+		public async Task<SingleResult<BookDto>> UpdateBook([FromBody] UpdateBookRequest request)
+		{
+			var cmd = new UpdateBookCommand()
+			{
+				Id = request.Id,
+				Title = request.Title,
+				DatePublish = request.DatePublish,
+				Authors = request.Authors
+			};
+
+			return await _mediator.Send(cmd);
+		}
 	}
 }

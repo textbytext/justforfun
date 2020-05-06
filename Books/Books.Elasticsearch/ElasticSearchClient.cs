@@ -59,6 +59,7 @@ namespace Books.Elasticsearch
 		{
 			var url = $"{_indexUrl}/{typeName}";
 			var resp = await _httpClient.DeleteAsync(url);
+			await _processResponse(resp);
 			if (resp.IsSuccessStatusCode)
 			{
 				// ...
@@ -67,13 +68,18 @@ namespace Books.Elasticsearch
 
 		public async Task Update<T>(string typeName, string id, T data)
 		{
-			var url = $"{_indexUrl}/{typeName}";
+			var url = $"{_indexUrl}/{typeName}/{id}";
 			var json = _serialize(data);
 			var resp = await _httpClient.PutAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+			await _processResponse(resp);
 			if (resp.IsSuccessStatusCode)
 			{
 				// ...
 			}
 		}
+
+		/*
+		 get http://localhost:9200/bookindex/books/_search?q=Id:66
+		 */
 	}
 }

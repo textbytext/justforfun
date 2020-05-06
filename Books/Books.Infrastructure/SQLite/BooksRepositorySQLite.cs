@@ -1,4 +1,5 @@
 ﻿using Books.Core;
+using Books.Core.Exceptions;
 using Books.Core.Models;
 using Books.Domain;
 using Books.Domain.Entities;
@@ -52,7 +53,7 @@ namespace Books.Infrastructure.SQLite
 			return await _context.Books.CountAsync();
 		}
 
-		public BookDto GetBookById(int id)
+		public BookDto GetBookById(long id)
 		{
 			return _context
 				.Books
@@ -87,6 +88,24 @@ namespace Books.Infrastructure.SQLite
 		{
 			var result = await _addBooks(new[] { book });
 			return result.FirstOrDefault();
+		}
+
+		public async Task<BookDto> UpdateBook(BookDto bookDto)
+		{
+			var book = _context
+				.Books
+				.Where(b => b.Id == bookDto.Id)
+				.FirstOrDefault();
+
+			if (null == book)
+			{
+				throw new BookNotFoundException(bookDto.Id);
+			}
+
+			book.Title = bookDto.Title;
+			await _context.SaveChangesAsync();
+
+			return _toBookDto.Compile()(book);
 		}
 
 		public async Task<IEnumerable<AuthorDto>> GetAuthors(IEnumerable<long> authors)

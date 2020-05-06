@@ -23,6 +23,14 @@ namespace Books.Elasticsearch
 			await _elasticSearchClient.Add(_bookType, book);
 		}
 
+		public async Task UpdateBook(BookDto book)
+		{
+			await _elasticSearchClient.Update(_bookType, book.Id.ToString(), new {
+				book.Title,
+				book.DatePublish,
+			});
+		}
+
 		public Task<IEnumerable<long>> FindBookIdsByTitle(string title)
 		{
 			throw new NotImplementedException();
