@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Text.Json;
@@ -12,12 +14,17 @@ namespace Books.WebApi.Middlewares
 	internal class ExceptionHandler
 	{
 		internal static async Task Handle(HttpContext context)
-		{			
+		{
+			var logger = context.RequestServices.GetRequiredService<ILogger<ExceptionHandler>>();			
+
 			context.Response.StatusCode = context.Response.StatusCode;
 			context.Response.ContentType = "application/json";
 
 			var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 			var ex = exceptionHandlerPathFeature?.Error;
+
+			logger.LogDebug("Handle. " + ex?.Message);
+
 			var result = new ErrorResult();
 			if (null != ex)
 			{

@@ -1,5 +1,6 @@
 ﻿using Books.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,5 +17,7 @@ namespace Books.Domain
 
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 		int SaveChanges();
+
+		ChangeTracker ChangeTracker { get; }
 	}
 }

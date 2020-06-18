@@ -7,6 +7,7 @@ using Books.Elasticsearch;
 using Books.GraphQLApi;
 using Books.Infrastructure.Events;
 using Books.Infrastructure.SQLite;
+using Books.WebApi.Filters;
 using Books.WebApi.Middlewares;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -50,7 +51,9 @@ namespace Books.WebApi
 			services.AddMediatR(typeof(GetBookQuery).GetTypeInfo().Assembly);
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
-			services.AddControllers()
+			services.AddControllers(opt => {
+				opt.Filters.Add<SaveDbFilter>();
+			})
 				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetBookQuery>())
 				.AddJsonOptions(option =>
 				{
@@ -93,11 +96,11 @@ namespace Books.WebApi
 			{
 				//app.UseDeveloperExceptionPage();
 			}
-			app.UseMiddleware<DataBaseSeeder>();
-
 			StartupConfigurator.Configure(app);
 
 			app.UseExceptionHandler(errorApp => errorApp.Run(ExceptionHandler.Handle));
+
+			app.UseMiddleware<DataBaseSeeder>();
 
 			//app.UseHttpsRedirection();
 

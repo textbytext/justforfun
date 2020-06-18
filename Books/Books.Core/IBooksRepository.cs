@@ -1,11 +1,12 @@
 ﻿using Books.Core.Models;
 using Books.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Books.Core
 {
-	public interface IBooksRepository
+	public interface IBooksRepository : IDisposable
 	{
 		Task<IEnumerable<Book>> GetBooks();
 

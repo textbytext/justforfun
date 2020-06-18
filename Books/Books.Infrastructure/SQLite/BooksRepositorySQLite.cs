@@ -4,6 +4,7 @@ using Books.Core.Models;
 using Books.Domain;
 using Books.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,17 @@ namespace Books.Infrastructure.SQLite
 	public class BooksRepositorySQLite : IBooksRepository
 	{
 		private readonly IBooksDbContext _context;
+		private readonly ILogger<BooksRepositorySQLite> _logger;
 
-		public BooksRepositorySQLite()
+		public BooksRepositorySQLite(ILogger<BooksRepositorySQLite> logger)
 		{
+			_logger = logger;
 		}
 
-		public BooksRepositorySQLite(IBooksDbContext context)
+		public BooksRepositorySQLite(IBooksDbContext context, ILogger<BooksRepositorySQLite> logger)
 		{
 			_context = context;
+			_logger = logger;
 		}
 
 		public async Task<IEnumerable<Book>> GetAuthorBooks(long authorId)
@@ -122,6 +126,18 @@ namespace Books.Infrastructure.SQLite
 			return await query
 				.Select(_toAuthorDto)
 				.ToListAsync() ?? new List<AuthorDto>();
+		}
+
+		private bool _disposed = false;
+		public void Dispose()
+		{
+			_logger.LogDebug("Dispose");
+			if (!_disposed)
+			{
+				//throw new Exception("Dispose exception");
+				//_context.SaveChanges();
+			}
+			_disposed = true;			
 		}
 
 		private Expression<Func<Book, BookDto>> _toBookDto

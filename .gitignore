@@ -18,3 +18,4 @@ bld/
 # Visual Studio 2015 cache/options directory
 .vs/
 /Books/Books.WebApi/AppData/books_sqlite.db
+.ionide/symbolCache.db
