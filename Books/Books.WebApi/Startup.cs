@@ -51,7 +51,8 @@ namespace Books.WebApi
 			services.AddMediatR(typeof(GetBookQuery).GetTypeInfo().Assembly);
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
-			services.AddControllers(opt => {
+			services.AddControllers(opt =>
+			{
 				opt.Filters.Add<SaveDbFilter>();
 			})
 				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetBookQuery>())
