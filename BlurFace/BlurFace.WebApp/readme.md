@@ -21,3 +21,10 @@ dotnet build
 <p>
 <strong>Azure Face Recognition</strong> - ;)
 </p>
+
+<h2>View Result</h2>
+<p>
+open in web browser https://SERVER-ADDRESS/home/images (https://localhost:5001/home/images - if local)
+</p>
+
+![Result](wwwroot/images/Result.jpg)
