@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Search";
+}
+
+<div id="blure-facer">
+	<div class="d-flex p-1"
+		 id="blure-facer-search">
+		<div class="flex-grow-1">
+			<input type="text"
+				   id="blure-facer-search-address"
+				   class="form-control rounded-0 rounded-left"
+				   placeholder="enter an url and press the 'Blure' button, please" />
+		</div>
+		<div>
+			<button role="button"
+					class="btn btn-info rounded-0 rounded-right"
+					id="blure-facer-search-button">
+				Blure
+			</button>
+		</div>
+	</div>
+
+	<div id="blure-facer-page-content">
+	</div>
+</div>
+
+<script>
+	(function (buttonId, addressTextId, pageContentId) {
+		const textUrl = document.getElementById(addressTextId);
+		const buttonSearch = document.getElementById(buttonId);
+		const pageContent = document.getElementById(pageContentId);
+
+		/**
+		 * 
+		 * @@param {string} url
+		 */
+		const loadUrl = (url) => {
+			console.debug(`url: ${url}`);
+			pageContent.innerHTML = ``;
+
+			const handleErrors = (response) => {
+				if (!response.ok) {
+					const { status, statusText } = response;
+					const data = { status, statusText };
+
+					throw Error(JSON.stringify(data));
+				}
+				return response;
+			}
+
+			fetch(url)
+				.then(handleErrors)
+				.then(resp => resp.text())
+				.then(html => {
+					pageContent.innerHTML = html;
+				})
+				.catch(error => {
+					const data = JSON.parse(error.message);
+					const { status, statusText } = data;
+					pageContent.innerHTML = `<div class='alert alert-danger'>status: ${status}, statusText: ${statusText}</div>`;
+				});
+		};
+
+		buttonSearch.addEventListener('click',
+			() => {
+				const url = textUrl.value;
+				loadUrl(url);
+			},
+			false);
+	})('blure-facer-search-button', 'blure-facer-search-address', 'blure-facer-page-content');
+</script>
