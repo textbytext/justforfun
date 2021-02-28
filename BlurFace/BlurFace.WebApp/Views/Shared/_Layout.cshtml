@@ -6,7 +6,6 @@
 	<title>@ViewData["Title"] - Blur Face</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" />
-	<script>navigator.serviceWorker.register('@Url.Content("~/service-worker.js")');</script>
 </head>
 <body>
 	<header>
@@ -23,7 +22,26 @@
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>	
+	<script src="~/js/site.js" asp-append-version="true"></script>
+
+
+	<script>
+		(function () {
+			const address = '@Url.Content("~/service-worker.js")';
+			navigator.serviceWorker.register(address).then(reg => {
+				reg.onupdatefound = () => {					
+					const installingWorker = reg.installing;
+					installingWorker.onstatechange = () => {
+						console.debug('installingWorker.state: ' + installingWorker.state);
+
+						if (installingWorker.state === 'installed') {
+							location.reload();
+						}
+					};
+				};
+			});
+		})();
+	</script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
