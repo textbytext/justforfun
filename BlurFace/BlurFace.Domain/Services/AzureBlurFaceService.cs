@@ -49,15 +49,12 @@ namespace BlurFace
 
 		public async Task<byte[]> Blur(byte[] imageBytes)
 		{
-			using var stream1 = new MemoryStream();
-			await stream1.WriteAsync(imageBytes);
-			stream1.Position = 0;
-			var detected = await Recognize(stream1);
+			using var stream = new MemoryStream();
+			await stream.WriteAsync(imageBytes);
+			stream.Position = 0;
+			var detected = await Recognize(stream);
 
-			using var stream2 = new MemoryStream();
-			await stream2.WriteAsync(imageBytes);
-			stream2.Position = 0;
-			return imageProcessor.Blur(stream2, detected, azureFaceConfiguration.BlurRadius);
+			return imageProcessor.Blur(imageBytes, detected, azureFaceConfiguration.BlurRadius);
 		}
 
 		private async Task<IEnumerable<FacePosition>> Recognize(Stream imageStream)
