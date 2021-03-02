@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BlurFace.WebApp.Controllers
@@ -24,6 +25,11 @@ namespace BlurFace.WebApp.Controllers
 		}
 
 		public IActionResult Images()
+		{
+			return View();
+		}
+
+		public IActionResult Viewer()
 		{
 			return View();
 		}

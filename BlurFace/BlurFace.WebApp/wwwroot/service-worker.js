@@ -5,24 +5,19 @@ self.addEventListener('fetch', event => {
 	const method = event.request.method;
     const url = event.request.url;
     const destination = event.request.destination;
-    //console.log('fetch', method, destination, url);
+    const referer = event.request.referer;
 
-    if (method.toUpperCase() !== 'GET') return;
-    if (destination !== "image") return;
+    console.debug('fetch', url, method, destination, referer);
 
-    console.log('fetch image', method, destination, url);
+    if (url.indexOf("/Home") < 0) {
+        console.debug('return url', url,);
+        return;
+    }
 
-    //const base64 = window.btoa(url);
-    const blurUrl = `/api/blur/face?url=${url}`;
-    console.debug(blurUrl);
-    //return fetch(blurUrl);
+    const proxyUrl = `/api/proxy?url=${url}`;
+    console.debug('proxyUrl', proxyUrl);
 
     event.respondWith(async function () {
-        return fetch(blurUrl);
+        return fetch(proxyUrl);
     }());
-
-    /*// https://developer.mozilla.org/ru/docs/Web/API/FetchEvent
-    event.respondWith(async function () {        
-        return fetch(event.request);
-    }());*/
 });

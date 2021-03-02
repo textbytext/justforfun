@@ -2,12 +2,13 @@
     ViewData["Title"] = "Search";
 }
 
-<div id="blure-facer">
+<div id="blure-facer" style="height: 50px;">
 	<div class="d-flex p-1"
 		 id="blure-facer-search">
 		<div class="flex-grow-1">
 			<input type="text"
 				   id="blure-facer-search-address"
+				   value="https://alferov.pro/about"
 				   class="form-control rounded-0 rounded-left"
 				   placeholder="enter an url and press the 'Blure' button, please" />
 		</div>
@@ -18,48 +19,45 @@
 				Blure
 			</button>
 		</div>
-	</div>
-
-	<div id="blure-facer-page-content">
-	</div>
+	</div>	
 </div>
 
+<iframe class="w-100 border-0"
+		style="position: absolute; top: 50px; left: 0; width: 100%; bottom: 0" 
+		id="blure-facer-iframe">
+</iframe>
+
 <script>
-	(function (buttonId, addressTextId, pageContentId) {
+	(function (buttonId, addressTextId) {
 		const textUrl = document.getElementById(addressTextId);
 		const buttonSearch = document.getElementById(buttonId);
-		const pageContent = document.getElementById(pageContentId);
+
+		const getValidUrl = (url, origin) => {
+			try {
+				var newUrl = new URL(url);
+				return url;
+			}
+			catch {
+				return url[0] === '/'
+					? origin + url
+					: origin + '/' + url
+			}
+		}
 
 		/**
-		 * 
+		 *
 		 * @@param {string} url
 		 */
-		const loadUrl = (url) => {
+		async function loadUrl(url) {
 			console.debug(`url: ${url}`);
-			pageContent.innerHTML = ``;
 
-			const handleErrors = (response) => {
-				if (!response.ok) {
-					const { status, statusText } = response;
-					const data = { status, statusText };
-
-					throw Error(JSON.stringify(data));
-				}
-				return response;
+			const viewUrl = `@Url.Content("~/Home/Viewer")?page=${url}`;
+			const iframe = document.getElementById('blure-facer-iframe');
+			iframe.onload = () => {
+				console.debug(iframe.contentDocument.body);
 			}
-
-			fetch(url)
-				.then(handleErrors)
-				.then(resp => resp.text())
-				.then(html => {
-					pageContent.innerHTML = html;
-				})
-				.catch(error => {
-					const data = JSON.parse(error.message);
-					const { status, statusText } = data;
-					pageContent.innerHTML = `<div class='alert alert-danger'>status: ${status}, statusText: ${statusText}</div>`;
-				});
-		};
+			iframe.src = viewUrl;
+		}
 
 		buttonSearch.addEventListener('click',
 			() => {
@@ -67,5 +65,14 @@
 				loadUrl(url);
 			},
 			false);
-	})('blure-facer-search-button', 'blure-facer-search-address', 'blure-facer-page-content');
+	})('blure-facer-search-button', 'blure-facer-search-address');
+
+	const onresize = () => {
+		const top = document.getElementById('blure-facer');
+		const iframe = document.getElementById('blure-facer-iframe');
+		iframe.style.height = (window.innerHeight - top.clientHeight) + 'px';
+	};
+
+	window.onresize = onresize;
+	onresize();
 </script>

@@ -1,0 +1,99 @@
+﻿@model string
+@{
+	Layout = "_LayoutViewer";
+}
+
+<div id="blure-facer">
+	<div id="blure-facer-page-content" style="border: 1px solid red;" class="m-1 p-1">
+	</div>
+</div>
+
+<script>
+	(function (pageContentId) {
+		const pageContent = document.getElementById(pageContentId);
+
+		const getValidUrl = (url, origin) => {
+			try {
+				var newUrl = new URL(url);
+				return url;
+			}
+			catch {
+				return url[0] === '/'
+					? origin + url
+					: origin + '/' + url
+			}
+		}
+
+		/**
+		 *
+		 * @@param {string} url
+		 */
+		async function loadUrl(url) {
+			console.debug(`url: ${url}`);
+
+			pageContent.innerHTML = ``;
+
+			const handleErrors = (response) => {
+				if (!response.ok) {
+					const { status, statusText } = response;
+					const data = { status, statusText };
+
+					throw Error(JSON.stringify(data));
+				}
+				return response;
+			}
+
+			const fetchUrl = `/api/proxy?url=${url}`;
+			fetch(fetchUrl)
+				.then(handleErrors)
+				.then(resp => resp.text())
+				.then(html => {
+					var host = new URL(url);
+
+					while (pageContent.firstChild) {
+						pageContent.removeChild(pageContent.firstChild);
+					}
+					const container = document.createElement('div');
+					container.innerHTML = html;
+
+					{
+						var scripts = container.querySelectorAll('script');
+						scripts.forEach(script => script.remove());
+					}
+
+
+					{
+						var images = container.querySelectorAll('[src]');
+						images.forEach(element => {
+							var src = element.getAttribute("src");
+							src = getValidUrl(src, host.origin);
+							var newSrc = `/api/proxy?url=${src}`;
+							element.setAttribute("src", newSrc);
+						});
+					}
+
+					{
+						var hrefs = container.querySelectorAll('[href]');
+						hrefs.forEach(element => {
+							var src = element.getAttribute("href");
+							src = getValidUrl(src, host.origin);
+							var newSrc = `/api/proxy?url=${src}`;
+							element.setAttribute("href", newSrc);
+						});
+					}
+
+					pageContent.appendChild(container);
+				})
+				.catch(error => {
+					const data = JSON.parse(error.message);
+					const { status, statusText } = data;
+					pageContent.innerHTML = `<div class='alert alert-danger'>status: ${status}, statusText: ${statusText}</div>`;
+				});
+		};
+
+
+		console.debug(location);
+		const url = location.search.substring(location.search.indexOf('=') + 1);
+		loadUrl(url);
+	})('blure-facer-page-content');
+</script>
